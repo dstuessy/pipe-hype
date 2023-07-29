@@ -52,6 +52,10 @@ function drawQueue() {
   });
 
   border.on("pointerdown", (event) => {
+    if (hoverCell) {
+      app.stage.removeChild(hoverCell);
+    }
+
     if (!selected) {
       selected = queue.pop();
       if (selected) {
@@ -95,10 +99,10 @@ function drawOverlay() {
 
   border.on("pointermove", (event) => {
     const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
+    if (hoverCell) {
+      app.stage.removeChild(hoverCell);
+    }
     if (selected && pos[1] > 0) {
-      if (hoverCell) {
-        app.stage.removeChild(hoverCell);
-      }
       hoverCell = new PIXI.Graphics();
       hoverCell.lineStyle(4, 0x222034);
       hoverCell.drawRect(

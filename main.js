@@ -21,6 +21,7 @@ app.renderer.backgroundColor = 0xffffff;
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.getElementById('canvas-wrapper').appendChild(app.view);
 
+let selected = null;
 const queue = [];
 const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
 const overlays = [];
@@ -38,18 +39,37 @@ function drawQueue() {
   app.stage.addChild(border);
 
   queue.forEach(async (part, i) => {
-    const partTexture = await Assets.load(part.spritePath);
-    const partSprite = Sprite.from(partTexture);
-    partSprite.x = pos[0];
-    partSprite.y = (pos[1] + (queueH - CELL_SIZE * queue.length) * scale) + (i * CELL_SIZE * scale);
-    partSprite.scale.set(scale);
-    app.stage.addChild(partSprite);
+    part.sprite.x = pos[0];
+    part.sprite.y = (pos[1] + (queueH - CELL_SIZE * queue.length) * scale) + (i * CELL_SIZE * scale);
+    part.sprite.scale.set(scale);
+    part.sprite.interactive = true;
+    app.stage.addChild(part.sprite);
 
-    const spriteBorder = new PIXI.Graphics();
-    spriteBorder.lineStyle(4, 0xcbdbfc);
-    spriteBorder.drawRect(partSprite.x, partSprite.y, CELL_SIZE * scale, CELL_SIZE * scale);
-    app.stage.addChild(spriteBorder);
+    part.sprite.on("pointerdown", (event) => {
+      if (!selected) {
+        selected = queue[queue.length - 1];
+        selected.oldPos = [selected.sprite.x, selected.sprite.y];
+        selected.sprite.x = event.global.x;
+        selected.sprite.y = event.global.y;
+      } else {
+        selected.sprite.x = selected.oldPos[0];
+        selected.sprite.y = selected.oldPos[1];
+        selected = null;
+      }
+    });
+
+    part.sprite.on("globalmousemove", (event) => {
+      if (selected) {
+        selected.sprite.x = event.global.x;
+        selected.sprite.y = event.global.y;
+      }
+    });
   });
+
+  const selectableBorder = new PIXI.Graphics();
+  selectableBorder.lineStyle(4, 0xcbdbfc);
+  selectableBorder.drawRect(pos[0], pos[1] + (queueH - CELL_SIZE) * scale, queueW * scale, CELL_SIZE * scale);
+  app.stage.addChild(selectableBorder);
 }
 
 function drawPipeGrid(texture) {
@@ -76,10 +96,12 @@ function drawPipeGrid(texture) {
   app.stage.addChild(border);
 }
 
-function renderLevel(level) {
-  level.partsQueue.forEach((part) => {
+async function renderLevel(level) {
+  for (const part of level.partsQueue) {
+    const partTexture = await Assets.load(part.spritePath);
+    part.sprite = Sprite.from(partTexture);
     queue.push(part);
-  })
+  }
   level.houses.forEach(async (houseData) => {
     grid[houseData.pos[0]][houseData.pos[1]] = houseData;
     const houseTexture = await Assets.load(houseData.type.spritePath);
@@ -116,6 +138,6 @@ function renderToGrid(texture, pos) {
 ;(async () => {
   const cellTexture = await Assets.load("assets/cell.png");
   drawPipeGrid(cellTexture);
-  renderLevel(LEVEL_1);
+  await renderLevel(LEVEL_1);
   drawQueue(LEVEL_1);
 })()

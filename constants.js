@@ -2,6 +2,7 @@ const CELL_SIZE = 64;
 const GRID_SIZE_X = 10;
 const GRID_SIZE_Y = 7;
 const QUEUE_WIDTH = 1;
+const QUEUE_MARGIN = 16;
 
 const GREEN_FACTORY = {
   spritePath: "assets/factory-green.png",

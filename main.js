@@ -30,7 +30,7 @@ function drawQueue() {
   const margin = getGridMargins();
   const queueW = (QUEUE_WIDTH * CELL_SIZE);
   const queueH = (GRID_SIZE_Y * CELL_SIZE);
-  const pos = [margin[0]-queueW * scale, margin[1]];
+  const pos = [margin[0]-queueW-QUEUE_MARGIN * scale, margin[1]];
 
   const border = new PIXI.Graphics();
   border.lineStyle(4, 0xcbdbfc);

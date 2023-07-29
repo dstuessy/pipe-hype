@@ -14,13 +14,28 @@ const EMPTY_GROUND = [
   },
   {
     spritePath: "assets/empty-ground-2.png",
-  }
+  },
+  {
+    spritePath: "assets/empty-ground-3.png",
+  },
+  {
+    spritePath: "assets/empty-ground-4.png",
+  },
 ]
 
 const EMPTY_CONCRETE = [
   {
-    spritePath: "assets/ground.png",
-  }
+    spritePath: "assets/ground-1.png",
+  },
+  {
+    spritePath: "assets/ground-2.png",
+  },
+  {
+    spritePath: "assets/ground-3.png",
+  },
+  {
+    spritePath: "assets/ground-4.png",
+  },
 ]
 
 const HOUSE_1 = {

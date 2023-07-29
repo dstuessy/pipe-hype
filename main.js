@@ -40,10 +40,14 @@ const cells = [];
       cell.x = gridMargin[0] + (i * CELL_SIZE * scale);
       cell.y = gridMargin[1] + (ii * CELL_SIZE * scale);
 
-      console.log(scale)
       cell.scale.set(scale);
 
       cells.push(cell);
     }
   }
+
+  const border = new PIXI.Graphics();
+  border.lineStyle(4, 0xcbdbfc);
+  border.drawRect(gridMargin[0], gridMargin[1], GRID_SIZE * CELL_SIZE * scale, GRID_SIZE * CELL_SIZE * scale);
+  app.stage.addChild(border);
 })()

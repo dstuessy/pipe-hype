@@ -79,7 +79,7 @@ function drawQueue() {
   app.stage.addChild(container);
 }
 
-function drawPipeGrid() {
+function drawOverlay() {
   const scale = getScale();
   const margin = getGridMargins();
 
@@ -136,6 +136,6 @@ function renderToGrid(texture, pos) {
 
 ;(async () => {
   await renderLevel(LEVEL_1);
-  drawPipeGrid();
+  drawOverlay();
   drawQueue(LEVEL_1);
 })()

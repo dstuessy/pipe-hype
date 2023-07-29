@@ -24,21 +24,14 @@ document.body.appendChild(app.view);
 
 const cells = [];
 
-;(async () => {
-  const texture = await Assets.load("assets/cell.png");
-  const scale = getScale();
-  const gridMargin = [
-    (app.renderer.width - (GRID_SIZE * CELL_SIZE * scale)) / 2,
-    (app.renderer.height - (GRID_SIZE * CELL_SIZE * scale)) / 2,
-  ]
-
+function drawPipeGrid(texture, margin = [0, 0], scale = 1) {
   for (let i = 0; i < GRID_SIZE; i++) {
     for (let ii = 0; ii < GRID_SIZE; ii++) {
       const cell = Sprite.from(texture);
       app.stage.addChild(cell);
 
-      cell.x = gridMargin[0] + (i * CELL_SIZE * scale);
-      cell.y = gridMargin[1] + (ii * CELL_SIZE * scale);
+      cell.x = margin[0] + (i * CELL_SIZE * scale);
+      cell.y = margin[1] + (ii * CELL_SIZE * scale);
 
       cell.scale.set(scale);
 
@@ -48,6 +41,17 @@ const cells = [];
 
   const border = new PIXI.Graphics();
   border.lineStyle(4, 0xcbdbfc);
-  border.drawRect(gridMargin[0], gridMargin[1], GRID_SIZE * CELL_SIZE * scale, GRID_SIZE * CELL_SIZE * scale);
+  border.drawRect(margin[0], margin[1], GRID_SIZE * CELL_SIZE * scale, GRID_SIZE * CELL_SIZE * scale);
   app.stage.addChild(border);
+}
+
+;(async () => {
+  const cellTexture = await Assets.load("assets/cell.png");
+  const scale = getScale();
+  const gridMargin = [
+    (app.renderer.width - (GRID_SIZE * CELL_SIZE * scale)) / 2,
+    (app.renderer.height - (GRID_SIZE * CELL_SIZE * scale)) / 2,
+  ]
+
+  drawPipeGrid(cellTexture, gridMargin, scale);
 })()

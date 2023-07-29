@@ -94,8 +94,8 @@ function drawOverlay() {
   app.stage.addChild(border);
 
   border.on("pointermove", (event) => {
-    if (selected) {
-      const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
+    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
+    if (selected && pos[1] > 0) {
       if (hoverCell) {
         app.stage.removeChild(hoverCell);
       }
@@ -113,7 +113,7 @@ function drawOverlay() {
 
   border.on("pointerup", (event) => {
     const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
-    if (selected) {
+    if (selected && pos[1] > 0) {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
       selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
       selected.pos = pos;

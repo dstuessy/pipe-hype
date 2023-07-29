@@ -38,7 +38,7 @@ function drawQueue() {
   container.interactive = true;
 
   const border = new PIXI.Graphics();
-  border.hitArea = new PIXI.Rectangle(pos[0], pos[1], queueW, queueH);
+  border.hitArea = new PIXI.Rectangle(pos[0], pos[1], queueW * scale, queueH * scale);
   border.interactive = true;
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(pos[0], pos[1], queueW * scale, queueH * scale);
@@ -62,6 +62,7 @@ function drawQueue() {
     } else {
       selected.sprite.x = selected.oldPos[0];
       selected.sprite.y = selected.oldPos[1];
+      queue.push(selected);
       selected = null;
     }
   });

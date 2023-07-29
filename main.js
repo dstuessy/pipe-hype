@@ -21,7 +21,8 @@ app.renderer.backgroundColor = 0xffffff;
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.getElementById('canvas-wrapper').appendChild(app.view);
 
-const cells = [];
+const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
+const overlays = [];
 
 function drawPipeGrid(texture) {
   const scale = getScale();
@@ -37,7 +38,7 @@ function drawPipeGrid(texture) {
 
       cell.scale.set(scale);
 
-      cells.push(cell);
+      overlays.push(cell);
     }
   }
 
@@ -45,6 +46,29 @@ function drawPipeGrid(texture) {
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   app.stage.addChild(border);
+}
+
+function renderLevel(level) {
+  level.houses.forEach(async (houseData) => {
+    grid[houseData.pos[0]][houseData.pos[1]] = houseData;
+    const houseTexture = await Assets.load(houseData.type.spritePath);
+    renderToGrid(houseTexture, houseData.pos)
+  });
+  level.factories.forEach(async (factoryData) => {
+    grid[factoryData.pos[0]][factoryData.pos[1]] = factoryData;
+    const factoryTexture = await Assets.load(factoryData.type.spritePath);
+    renderToGrid(factoryTexture, factoryData.pos)
+  });
+  grid[0].forEach((_, i) => {
+    const randomGround = EMPTY_GROUND[Math.floor(Math.random() * EMPTY_GROUND.length)]
+    renderToGrid(randomGround.spritePath, [i, 0])
+  })
+  for (let i = 0; i < GRID_SIZE_X; i++) {
+    for (let ii = 1; ii < GRID_SIZE_Y; ii++) {
+      const randomConcrete = EMPTY_CONCRETE[Math.floor(Math.random() * EMPTY_CONCRETE.length)]
+      renderToGrid(randomConcrete.spritePath, [i, ii])
+    }
+  }
 }
 
 function renderToGrid(texture, pos) {
@@ -60,9 +84,7 @@ function renderToGrid(texture, pos) {
 
 ;(async () => {
   const cellTexture = await Assets.load("assets/cell.png");
-  const houseTexture = await Assets.load('assets/house-1.png');
 
   drawPipeGrid(cellTexture);
-
-  renderToGrid(houseTexture, [0, 0]);
+  renderLevel(LEVEL_1);
 })()

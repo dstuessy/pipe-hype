@@ -84,6 +84,8 @@ function drawPipeGrid() {
   const margin = getGridMargins();
 
   const border = new PIXI.Graphics();
+  border.hitArea = new PIXI.Rectangle(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE, GRID_SIZE_Y * CELL_SIZE);
+  border.interactive = true;
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   app.stage.addChild(border);
@@ -99,16 +101,6 @@ async function renderLevel(level) {
     part.sprite = Sprite.from(partTexture);
     queue.push(part);
   }
-  level.houses.forEach(async (houseData) => {
-    grid[houseData.pos[0]][houseData.pos[1]] = houseData;
-    const houseTexture = await Assets.load(houseData.type.spritePath);
-    renderToGrid(houseTexture, houseData.pos)
-  });
-  level.factories.forEach(async (factoryData) => {
-    grid[factoryData.pos[0]][factoryData.pos[1]] = factoryData;
-    const factoryTexture = await Assets.load(factoryData.type.spritePath);
-    renderToGrid(factoryTexture, factoryData.pos)
-  });
   grid[0].forEach((_, i) => {
     const randomGround = EMPTY_GROUND[Math.floor(Math.random() * EMPTY_GROUND.length)]
     renderToGrid(randomGround.spritePath, [i, 0])
@@ -118,6 +110,16 @@ async function renderLevel(level) {
       const randomUnderground = EMPTY_UNDERGROUND[Math.floor(Math.random() * EMPTY_UNDERGROUND.length)]
       renderToGrid(randomUnderground.spritePath, [i, ii])
     }
+  }
+  for (const houseData of level.houses) {
+    grid[houseData.pos[0]][houseData.pos[1]] = houseData;
+    const houseTexture = await Assets.load(houseData.type.spritePath);
+    renderToGrid(houseTexture, houseData.pos)
+  }
+  for (const factoryData of level.factories) {
+    grid[factoryData.pos[0]][factoryData.pos[1]] = factoryData;
+    const factoryTexture = await Assets.load(factoryData.type.spritePath);
+    renderToGrid(factoryTexture, factoryData.pos)
   }
 }
 
@@ -134,7 +136,7 @@ function renderToGrid(texture, pos) {
 
 ;(async () => {
   const cellTexture = await Assets.load("assets/cell.png");
-  drawPipeGrid(cellTexture);
   await renderLevel(LEVEL_1);
+  drawPipeGrid(cellTexture);
   drawQueue(LEVEL_1);
 })()

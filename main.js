@@ -31,10 +31,25 @@ function drawQueue() {
   const queueW = (QUEUE_WIDTH * CELL_SIZE);
   const queueH = (GRID_SIZE_Y * CELL_SIZE);
   const pos = [margin[0]-queueW * scale, margin[1]];
+
   const border = new PIXI.Graphics();
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(pos[0], pos[1], queueW * scale, queueH * scale);
   app.stage.addChild(border);
+
+  queue.forEach(async (part, i) => {
+    const partTexture = await Assets.load(part.spritePath);
+    const partSprite = Sprite.from(partTexture);
+    partSprite.x = pos[0];
+    partSprite.y = (pos[1] + (queueH - CELL_SIZE * queue.length) * scale) + (i * CELL_SIZE * scale);
+    partSprite.scale.set(scale);
+    app.stage.addChild(partSprite);
+
+    const spriteBorder = new PIXI.Graphics();
+    spriteBorder.lineStyle(4, 0xcbdbfc);
+    spriteBorder.drawRect(partSprite.x, partSprite.y, CELL_SIZE * scale, CELL_SIZE * scale);
+    app.stage.addChild(spriteBorder);
+  });
 }
 
 function drawPipeGrid(texture) {

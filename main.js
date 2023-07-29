@@ -22,9 +22,20 @@ app.renderer.backgroundColor = 0xffffff;
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
+const cells = [];
+
 ;(async () => {
   const texture = await Assets.load("assets/cell.png");
-  const image = Sprite.from(texture);
 
-  app.stage.addChild(image);
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let ii = 0; ii < GRID_SIZE; ii++) {
+      const cell = Sprite.from(texture);
+      app.stage.addChild(cell);
+
+      cell.x = i * CELL_SIZE;
+      cell.y = ii * CELL_SIZE;
+
+      cells.push(cell);
+    }
+  }
 })()

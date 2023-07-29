@@ -21,8 +21,19 @@ app.renderer.backgroundColor = 0xffffff;
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.getElementById('canvas-wrapper').appendChild(app.view);
 
+const queue = [];
 const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
 const overlays = [];
+
+function drawQueue() {
+  const scale = getScale();
+  const margin = getGridMargins();
+  const pos = [margin[0]-(QUEUE_WIDTH * CELL_SIZE) * scale, margin[1]];
+  const queue = new PIXI.Graphics();
+  queue.lineStyle(4, 0xcbdbfc);
+  queue.drawRect(pos[0], pos[1], QUEUE_WIDTH * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
+  app.stage.addChild(queue);
+}
 
 function drawPipeGrid(texture) {
   const scale = getScale();
@@ -49,6 +60,9 @@ function drawPipeGrid(texture) {
 }
 
 function renderLevel(level) {
+  level.partsQueue.forEach((part) => {
+    queue.push(part);
+  })
   level.houses.forEach(async (houseData) => {
     grid[houseData.pos[0]][houseData.pos[1]] = houseData;
     const houseTexture = await Assets.load(houseData.type.spritePath);
@@ -85,6 +99,7 @@ function renderToGrid(texture, pos) {
 ;(async () => {
   const cellTexture = await Assets.load("assets/cell.png");
 
-  drawPipeGrid(cellTexture);
   renderLevel(LEVEL_1);
+  drawPipeGrid(cellTexture);
+  drawQueue(LEVEL_1);
 })()

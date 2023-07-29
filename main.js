@@ -55,9 +55,11 @@ function drawQueue() {
   border.on("pointerdown", (event) => {
     if (!selected) {
       selected = queue.pop();
-      selected.oldPos = [selected.sprite.x, selected.sprite.y];
-      selected.sprite.x = event.global.x;
-      selected.sprite.y = event.global.y;
+      if (selected) {
+        selected.oldPos = [selected.sprite.x, selected.sprite.y];
+        selected.sprite.x = event.global.x;
+        selected.sprite.y = event.global.y;
+      }
     } else {
       selected.sprite.x = selected.oldPos[0];
       selected.sprite.y = selected.oldPos[1];
@@ -92,19 +94,21 @@ function drawOverlay() {
   app.stage.addChild(border);
 
   border.on("pointermove", (event) => {
-    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
-    if (hoverCell) {
-      app.stage.removeChild(hoverCell);
+    if (selected) {
+      const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
+      if (hoverCell) {
+        app.stage.removeChild(hoverCell);
+      }
+      hoverCell = new PIXI.Graphics();
+      hoverCell.lineStyle(4, 0xcbdbfc);
+      hoverCell.drawRect(
+        pos[0] * CELL_SIZE * scale + margin[0],
+        pos[1] * CELL_SIZE * scale + margin[1],
+        CELL_SIZE * scale,
+        CELL_SIZE * scale
+      );
+      app.stage.addChild(hoverCell);
     }
-    hoverCell = new PIXI.Graphics();
-    hoverCell.lineStyle(4, 0xcbdbfc);
-    hoverCell.drawRect(
-      pos[0] * CELL_SIZE * scale + margin[0],
-      pos[1] * CELL_SIZE * scale + margin[1],
-      CELL_SIZE * scale,
-      CELL_SIZE * scale
-    );
-    app.stage.addChild(hoverCell);
   });
 
   border.on("pointerup", (event) => {
@@ -115,6 +119,7 @@ function drawOverlay() {
       selected.pos = pos;
       grid[pos[0]][pos[1]] = selected;
       selected = null;
+      app.stage.removeChild(hoverCell);
     }
   });
 }

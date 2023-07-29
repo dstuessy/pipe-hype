@@ -23,7 +23,7 @@ const EMPTY_GROUND = [
   },
 ]
 
-const EMPTY_CONCRETE = [
+const EMPTY_UNDERGROUND = [
   {
     spritePath: "assets/ground-1.png",
   },

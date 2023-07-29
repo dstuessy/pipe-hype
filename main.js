@@ -79,8 +79,8 @@ function renderLevel(level) {
   })
   for (let i = 0; i < GRID_SIZE_X; i++) {
     for (let ii = 1; ii < GRID_SIZE_Y; ii++) {
-      const randomConcrete = EMPTY_CONCRETE[Math.floor(Math.random() * EMPTY_CONCRETE.length)]
-      renderToGrid(randomConcrete.spritePath, [i, ii])
+      const randomUnderground = EMPTY_UNDERGROUND[Math.floor(Math.random() * EMPTY_UNDERGROUND.length)]
+      renderToGrid(randomUnderground.spritePath, [i, ii])
     }
   }
 }

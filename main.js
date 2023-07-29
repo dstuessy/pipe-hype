@@ -28,11 +28,13 @@ const overlays = [];
 function drawQueue() {
   const scale = getScale();
   const margin = getGridMargins();
-  const pos = [margin[0]-(QUEUE_WIDTH * CELL_SIZE) * scale, margin[1]];
-  const queue = new PIXI.Graphics();
-  queue.lineStyle(4, 0xcbdbfc);
-  queue.drawRect(pos[0], pos[1], QUEUE_WIDTH * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
-  app.stage.addChild(queue);
+  const queueW = (QUEUE_WIDTH * CELL_SIZE);
+  const queueH = (GRID_SIZE_Y * CELL_SIZE);
+  const pos = [margin[0]-queueW * scale, margin[1]];
+  const border = new PIXI.Graphics();
+  border.lineStyle(4, 0xcbdbfc);
+  border.drawRect(pos[0], pos[1], queueW * scale, queueH * scale);
+  app.stage.addChild(border);
 }
 
 function drawPipeGrid(texture) {

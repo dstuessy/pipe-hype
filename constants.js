@@ -36,6 +36,18 @@ const EMPTY_UNDERGROUND = [
   {
     spritePath: "assets/ground-4.png",
   },
+  {
+    spritePath: "assets/ground-5.png",
+  },
+  {
+    spritePath: "assets/ground-6.png",
+  },
+  {
+    spritePath: "assets/ground-7.png",
+  },
+  {
+    spritePath: "assets/ground-8.png",
+  },
 ]
 
 const HOUSE_1 = {

@@ -98,8 +98,7 @@ function renderToGrid(texture, pos) {
 
 ;(async () => {
   const cellTexture = await Assets.load("assets/cell.png");
-
-  renderLevel(LEVEL_1);
   drawPipeGrid(cellTexture);
+  renderLevel(LEVEL_1);
   drawQueue(LEVEL_1);
 })()

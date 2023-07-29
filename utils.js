@@ -14,9 +14,9 @@ function getGridMargins(){
 }
 
 function getGridPos(x, y) {
-  const margins = getGridMargins();
+  const scale = getScale();
   return [
-    Math.floor((x - margins[0]) / CELL_SIZE),
-    Math.floor((y - margins[1]) / CELL_SIZE),
+    Math.floor(x / (CELL_SIZE * scale)),
+    Math.floor(y / (CELL_SIZE * scale)),
   ]
 }

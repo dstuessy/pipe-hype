@@ -85,25 +85,30 @@ function drawOverlay() {
   const margin = getGridMargins();
 
   const border = new PIXI.Graphics();
-  border.hitArea = new PIXI.Rectangle(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE, GRID_SIZE_Y * CELL_SIZE);
+  border.hitArea = new PIXI.Rectangle(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   border.interactive = true;
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   app.stage.addChild(border);
 
   border.on("pointermove", (event) => {
-    const pos = getGridPos(event.global.x, event.global.y);
+    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
     if (hoverCell) {
       app.stage.removeChild(hoverCell);
     }
     hoverCell = new PIXI.Graphics();
     hoverCell.lineStyle(4, 0xcbdbfc);
-    hoverCell.drawRect(pos[0] * CELL_SIZE * scale + margin[0], pos[1] * CELL_SIZE * scale + margin[1], CELL_SIZE * scale, CELL_SIZE * scale);
+    hoverCell.drawRect(
+      pos[0] * CELL_SIZE * scale + margin[0],
+      pos[1] * CELL_SIZE * scale + margin[1],
+      CELL_SIZE * scale,
+      CELL_SIZE * scale
+    );
     app.stage.addChild(hoverCell);
   });
 
   border.on("pointerup", (event) => {
-    const pos = getGridPos(event.global.x, event.global.y);
+    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
     if (selected) {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
       selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];

@@ -12,3 +12,11 @@ function getGridMargins(){
     (app.renderer.height - (GRID_SIZE_Y * CELL_SIZE * scale)) / 2,
   ]
 }
+
+function getGridPos(x, y) {
+  const margins = getGridMargins();
+  return [
+    Math.floor((x - margins[0]) / CELL_SIZE),
+    Math.floor((y - margins[1]) / CELL_SIZE),
+  ]
+}

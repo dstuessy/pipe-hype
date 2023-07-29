@@ -22,6 +22,7 @@ app.renderer.backgroundColor = 0xffffff;
 document.getElementById('canvas-wrapper').appendChild(app.view);
 
 let selected = null;
+let hoverCell = null;
 const queue = [];
 const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
 const overlays = [];
@@ -53,7 +54,7 @@ function drawQueue() {
 
   border.on("pointerdown", (event) => {
     if (!selected) {
-      selected = queue[queue.length - 1];
+      selected = queue.pop();
       selected.oldPos = [selected.sprite.x, selected.sprite.y];
       selected.sprite.x = event.global.x;
       selected.sprite.y = event.global.y;
@@ -90,9 +91,27 @@ function drawOverlay() {
   border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   app.stage.addChild(border);
 
-  border.globalmousemove = (event) => {
-    console.log("border mouse move", event);
-  };
+  border.on("pointermove", (event) => {
+    const pos = getGridPos(event.global.x, event.global.y);
+    if (hoverCell) {
+      app.stage.removeChild(hoverCell);
+    }
+    hoverCell = new PIXI.Graphics();
+    hoverCell.lineStyle(4, 0xcbdbfc);
+    hoverCell.drawRect(pos[0] * CELL_SIZE * scale + margin[0], pos[1] * CELL_SIZE * scale + margin[1], CELL_SIZE * scale, CELL_SIZE * scale);
+    app.stage.addChild(hoverCell);
+  });
+
+  border.on("pointerup", (event) => {
+    const pos = getGridPos(event.global.x, event.global.y);
+    if (selected) {
+      selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
+      selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
+      selected.pos = pos;
+      grid[pos[0]][pos[1]] = selected;
+      selected = null;
+    }
+  });
 }
 
 async function renderLevel(level) {

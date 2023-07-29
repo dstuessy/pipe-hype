@@ -23,7 +23,10 @@ document.getElementById('canvas-wrapper').appendChild(app.view);
 
 const cells = [];
 
-function drawPipeGrid(texture, margin = [0, 0], scale = 1) {
+function drawPipeGrid(texture) {
+  const scale = getScale();
+  const margin = getGridMargins();
+
   for (let i = 0; i < GRID_SIZE_X; i++) {
     for (let ii = 0; ii < GRID_SIZE_Y; ii++) {
       const cell = Sprite.from(texture);
@@ -44,13 +47,22 @@ function drawPipeGrid(texture, margin = [0, 0], scale = 1) {
   app.stage.addChild(border);
 }
 
+function renderToGrid(texture, pos) {
+  const house = Sprite.from(texture);
+  const scale = getScale();
+  const gridMargin = getGridMargins();
+  house.x = gridMargin[0] + pos[0] * CELL_SIZE * scale;
+  house.y = gridMargin[1] + pos[1] * CELL_SIZE * scale;
+
+  house.scale.set(scale);
+  app.stage.addChild(house);
+}
+
 ;(async () => {
   const cellTexture = await Assets.load("assets/cell.png");
-  const scale = getScale();
-  const gridMargin = [
-    (app.renderer.width - (GRID_SIZE_X * CELL_SIZE * scale)) / 2,
-    (app.renderer.height - (GRID_SIZE_Y * CELL_SIZE * scale)) / 2,
-  ]
+  const houseTexture = await Assets.load('assets/house-1.png');
 
-  drawPipeGrid(cellTexture, gridMargin, scale);
+  drawPipeGrid(cellTexture);
+
+  renderToGrid(houseTexture, [0, 0]);
 })()

@@ -48,7 +48,6 @@ function drawQueue() {
     part.sprite.x = pos[0];
     part.sprite.y = (pos[1] + (queueH - CELL_SIZE * queue.length) * scale) + (i * CELL_SIZE * scale);
     part.sprite.scale.set(scale);
-    part.sprite.interactive = true;
     app.stage.addChild(part.sprite);
   });
 

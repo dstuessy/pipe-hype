@@ -40,7 +40,7 @@ function drawQueue() {
   const border = new PIXI.Graphics();
   border.hitArea = new PIXI.Rectangle(pos[0], pos[1], queueW * scale, queueH * scale);
   border.interactive = true;
-  border.lineStyle(4, 0xcbdbfc);
+  border.lineStyle(4, 0x222034);
   border.drawRect(pos[0], pos[1], queueW * scale, queueH * scale);
   container.addChild(border);
 
@@ -75,7 +75,7 @@ function drawQueue() {
   });
 
   const selectableBorder = new PIXI.Graphics();
-  selectableBorder.lineStyle(4, 0xcbdbfc);
+  selectableBorder.lineStyle(4, 0x222034);
   selectableBorder.drawRect(pos[0], pos[1] + (queueH - CELL_SIZE) * scale, queueW * scale, CELL_SIZE * scale);
   container.addChild(selectableBorder);
 
@@ -89,7 +89,7 @@ function drawOverlay() {
   const border = new PIXI.Graphics();
   border.hitArea = new PIXI.Rectangle(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   border.interactive = true;
-  border.lineStyle(4, 0xcbdbfc);
+  border.lineStyle(4, 0x222034);
   border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   app.stage.addChild(border);
 
@@ -100,7 +100,7 @@ function drawOverlay() {
         app.stage.removeChild(hoverCell);
       }
       hoverCell = new PIXI.Graphics();
-      hoverCell.lineStyle(4, 0xcbdbfc);
+      hoverCell.lineStyle(4, 0x222034);
       hoverCell.drawRect(
         pos[0] * CELL_SIZE * scale + margin[0],
         pos[1] * CELL_SIZE * scale + margin[1],

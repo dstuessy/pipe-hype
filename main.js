@@ -33,10 +33,15 @@ function drawQueue() {
   const queueH = (GRID_SIZE_Y * CELL_SIZE);
   const pos = [margin[0]-queueW-QUEUE_MARGIN * scale, margin[1]];
 
+  const container = new PIXI.Container();
+  container.interactive = true;
+
   const border = new PIXI.Graphics();
+  border.hitArea = new PIXI.Rectangle(pos[0], pos[1], queueW, queueH);
+  border.interactive = true;
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(pos[0], pos[1], queueW * scale, queueH * scale);
-  app.stage.addChild(border);
+  container.addChild(border);
 
   queue.forEach(async (part, i) => {
     part.sprite.x = pos[0];
@@ -44,56 +49,48 @@ function drawQueue() {
     part.sprite.scale.set(scale);
     part.sprite.interactive = true;
     app.stage.addChild(part.sprite);
+  });
 
-    part.sprite.on("pointerdown", (event) => {
-      if (!selected) {
-        selected = queue[queue.length - 1];
-        selected.oldPos = [selected.sprite.x, selected.sprite.y];
-        selected.sprite.x = event.global.x;
-        selected.sprite.y = event.global.y;
-      } else {
-        selected.sprite.x = selected.oldPos[0];
-        selected.sprite.y = selected.oldPos[1];
-        selected = null;
-      }
-    });
+  border.on("pointerdown", (event) => {
+    if (!selected) {
+      selected = queue[queue.length - 1];
+      selected.oldPos = [selected.sprite.x, selected.sprite.y];
+      selected.sprite.x = event.global.x;
+      selected.sprite.y = event.global.y;
+    } else {
+      selected.sprite.x = selected.oldPos[0];
+      selected.sprite.y = selected.oldPos[1];
+      selected = null;
+    }
+  });
 
-    part.sprite.on("globalmousemove", (event) => {
-      if (selected) {
-        selected.sprite.x = event.global.x;
-        selected.sprite.y = event.global.y;
-      }
-    });
+  container.on("globalpointermove", (event) => {
+    if (selected) {
+      selected.sprite.x = event.global.x;
+      selected.sprite.y = event.global.y;
+    }
   });
 
   const selectableBorder = new PIXI.Graphics();
   selectableBorder.lineStyle(4, 0xcbdbfc);
   selectableBorder.drawRect(pos[0], pos[1] + (queueH - CELL_SIZE) * scale, queueW * scale, CELL_SIZE * scale);
-  app.stage.addChild(selectableBorder);
+  container.addChild(selectableBorder);
+
+  app.stage.addChild(container);
 }
 
-function drawPipeGrid(texture) {
+function drawPipeGrid() {
   const scale = getScale();
   const margin = getGridMargins();
-
-  for (let i = 0; i < GRID_SIZE_X; i++) {
-    for (let ii = 0; ii < GRID_SIZE_Y; ii++) {
-      const cell = Sprite.from(texture);
-      app.stage.addChild(cell);
-
-      cell.x = margin[0] + (i * CELL_SIZE * scale);
-      cell.y = margin[1] + (ii * CELL_SIZE * scale);
-
-      cell.scale.set(scale);
-
-      overlays.push(cell);
-    }
-  }
 
   const border = new PIXI.Graphics();
   border.lineStyle(4, 0xcbdbfc);
   border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
   app.stage.addChild(border);
+
+  border.globalmousemove = (event) => {
+    console.log("border mouse move", event);
+  };
 }
 
 async function renderLevel(level) {

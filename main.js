@@ -28,6 +28,21 @@ const queue = [];
 const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
 const overlays = [];
 
+async function renderBackground() {
+  for (const [i, _] of Object.entries(grid[0])) {
+    const randomGround = EMPTY_GROUND[Math.floor(Math.random() * EMPTY_GROUND.length)]
+    const groundTexture = await Assets.load(randomGround.spritePath);
+    renderToGrid(groundTexture, [i, 0])
+  }
+  for (let i = 0; i < GRID_SIZE_X; i++) {
+    for (let ii = 1; ii < GRID_SIZE_Y; ii++) {
+      const randomUnderground = EMPTY_UNDERGROUND[Math.floor(Math.random() * EMPTY_UNDERGROUND.length)]
+      const undergroundTexture = await Assets.load(randomUnderground.spritePath);
+      renderToGrid(undergroundTexture, [i, ii])
+    }
+  }
+}
+
 function drawQueue() {
   const scale = getScale();
   const margin = getGridMargins();
@@ -146,16 +161,6 @@ async function renderLevel(level) {
     part.sprite = Sprite.from(partTexture);
     queue.push(part);
   }
-  grid[0].forEach((_, i) => {
-    const randomGround = EMPTY_GROUND[Math.floor(Math.random() * EMPTY_GROUND.length)]
-    renderToGrid(randomGround.spritePath, [i, 0])
-  })
-  for (let i = 0; i < GRID_SIZE_X; i++) {
-    for (let ii = 1; ii < GRID_SIZE_Y; ii++) {
-      const randomUnderground = EMPTY_UNDERGROUND[Math.floor(Math.random() * EMPTY_UNDERGROUND.length)]
-      renderToGrid(randomUnderground.spritePath, [i, ii])
-    }
-  }
   for (const houseData of level.houses) {
     grid[houseData.pos[0]][houseData.pos[1]] = houseData;
     const houseTexture = await Assets.load(houseData.type.spritePath);
@@ -168,19 +173,9 @@ async function renderLevel(level) {
   }
 }
 
-function renderToGrid(texture, pos) {
-  const house = Sprite.from(texture);
-  const scale = getScale();
-  const gridMargin = getGridMargins();
-  house.x = gridMargin[0] + pos[0] * CELL_SIZE * scale;
-  house.y = gridMargin[1] + pos[1] * CELL_SIZE * scale;
-
-  house.scale.set(scale);
-  app.stage.addChild(house);
-}
-
 ;(async () => {
-  await renderLevel(LEVEL_1);
-  drawOverlay();
-  drawQueue(LEVEL_1);
+  await renderBackground();
+  // await renderLevel(LEVEL_1);
+  // drawOverlay();
+  // drawQueue(LEVEL_1);
 })()

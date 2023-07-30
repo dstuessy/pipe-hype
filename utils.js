@@ -13,6 +13,18 @@ function getGridMargins(){
   ]
 }
 
+function renderToGrid(texture, pos) {
+  const sprite = Sprite.from(texture);
+  const scale = getScale();
+  const gridMargin = getGridMargins();
+  sprite.x = gridMargin[0] + pos[0] * CELL_SIZE * scale;
+  sprite.y = gridMargin[1] + pos[1] * CELL_SIZE * scale;
+
+  sprite.scale.set(scale);
+  app.stage.addChild(sprite);
+  return sprite;
+}
+
 function getGridPos(x, y) {
   const scale = getScale();
   return [

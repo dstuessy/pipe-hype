@@ -42,60 +42,8 @@ async function renderBackground() {
     }
   }
 }
-async function renderLayout() {
-  const scale = getScale();
-  const margin = getGridMargins();
 
-  const border = new PIXI.Graphics();
-  border.hitArea = new PIXI.Rectangle(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
-  border.interactive = true;
-  border.lineStyle(4, 0x222034);
-  border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
-  app.stage.addChild(border);
-
-  border.on("pointermove", (event) => {
-    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
-    if (hoverCell) {
-      app.stage.removeChild(hoverCell);
-    }
-    if (selected && pos[1] > 0) {
-      hoverCell = new PIXI.Graphics();
-      hoverCell.lineStyle(4, 0x222034);
-      hoverCell.drawRect(
-        pos[0] * CELL_SIZE * scale + margin[0],
-        pos[1] * CELL_SIZE * scale + margin[1],
-        CELL_SIZE * scale,
-        CELL_SIZE * scale
-      );
-      app.stage.addChild(hoverCell);
-    }
-  });
-
-  border.on("pointerup", (event) => {
-    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
-    if (selected && pos[1] > 0) {
-      selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
-      selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
-      selected.pos = pos;
-      selected.refs = getRefs(grid, pos, selected.type);
-      grid[pos[0]][pos[1]] = { ...selected };
-      selected = null;
-      app.stage.removeChild(hoverCell);
-
-      console.log(grid.flat())
-      const factory = grid.flat().find((v) => v && v.type && v.type.type === "factory");
-      factory.refs = getRefs(grid, factory.pos, factory.type.connections[0]);
-      console.log("factory", factory, factory.pos, factory.refs)
-      const c = isComplete(factory)
-      console.log("isCompleted", c)
-      if (c) {
-        completed.push(selected.color);
-      }
-    }
-  });
-}
-
-function drawQueue() {
+async function renderQueue() {
   const scale = getScale();
   const margin = getGridMargins();
   const queueW = (QUEUE_WIDTH * CELL_SIZE);
@@ -154,7 +102,6 @@ function drawQueue() {
   app.stage.addChild(container);
 }
 
-
 async function renderLevel(level) {
   for (const part of level.partsQueue) {
     const partTexture = await Assets.load(part.spritePath);
@@ -173,9 +120,62 @@ async function renderLevel(level) {
   }
 }
 
+async function renderGridOverlay() {
+  const scale = getScale();
+  const margin = getGridMargins();
+
+  const border = new PIXI.Graphics();
+  border.hitArea = new PIXI.Rectangle(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
+  border.interactive = true;
+  border.lineStyle(4, 0x222034);
+  border.drawRect(margin[0], margin[1], GRID_SIZE_X * CELL_SIZE * scale, GRID_SIZE_Y * CELL_SIZE * scale);
+  app.stage.addChild(border);
+
+  border.on("pointermove", (event) => {
+    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
+    if (hoverCell) {
+      app.stage.removeChild(hoverCell);
+    }
+    if (selected && pos[1] > 0) {
+      hoverCell = new PIXI.Graphics();
+      hoverCell.lineStyle(4, 0x222034);
+      hoverCell.drawRect(
+        pos[0] * CELL_SIZE * scale + margin[0],
+        pos[1] * CELL_SIZE * scale + margin[1],
+        CELL_SIZE * scale,
+        CELL_SIZE * scale
+      );
+      app.stage.addChild(hoverCell);
+    }
+  });
+
+  border.on("pointerup", (event) => {
+    const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
+    if (selected && pos[1] > 0) {
+      selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
+      selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
+      selected.pos = pos;
+      selected.refs = getRefs(grid, pos, selected.type);
+      grid[pos[0]][pos[1]] = { ...selected };
+      selected = null;
+      app.stage.removeChild(hoverCell);
+
+      console.log(grid.flat())
+      const factory = grid.flat().find((v) => v && v.type && v.type.type === "factory");
+      factory.refs = getRefs(grid, factory.pos, factory.type.connections[0]);
+      console.log("factory", factory, factory.pos, factory.refs)
+      const c = isComplete(factory)
+      console.log("isCompleted", c)
+      if (c) {
+        completed.push(selected.color);
+      }
+    }
+  });
+}
+
 ;(async () => {
   await renderBackground();
-  // await renderLevel(LEVEL_1);
-  // drawQueue(LEVEL_1);
-  await renderLayout();
+  await renderLevel(LEVEL_1);
+  await renderGridOverlay();
+  await renderQueue(LEVEL_1);
 })()

@@ -240,24 +240,115 @@ async function reset() {
   window.location.reload();
 }
 
+async function renderLoadingPart(n) {
+  const imgWidth = 1600;
+  const imgHeight = 1090;
+  const scale = Math.min(app.renderer.width / imgWidth, app.renderer.height / imgHeight);
+  const margin = [
+    (app.renderer.width - 1600 * scale) / 2,
+    (app.renderer.height - 1090 * scale) / 2,
+  ]
+  const texture = await Assets.load(`assets/loading-${n}.png`);
+  const sprite = new PIXI.Sprite(texture);
+  const minX = margin[0];
+  const minY = margin[1] + 241 * scale;
+  switch(n) {
+    case 8:
+      sprite.x = sprite.x + 320 * scale;
+    case 7:
+      sprite.x = sprite.x + 288 * scale;
+    case 6:
+      sprite.x = sprite.x + minX;
+      sprite.y = minY + 272 * scale;
+      break;
+    case 5:
+      sprite.x = sprite.x + 320 * scale;
+    case 4:
+      sprite.x = sprite.x + 320 * scale;
+    case 3:
+      sprite.x = sprite.x + 320 * scale;
+    case 2:
+      sprite.x = sprite.x + 288 * scale;
+    case 1:
+      sprite.x = sprite.x + minX;
+      sprite.y = sprite.y + minY;
+  }
+  sprite.scale.set(scale);
+  app.stage.addChild(sprite);
+}
+
 async function loadTextures() {
   for (const ground of EMPTY_GROUND) {
     textures[ground.spritePath] = await Assets.load(ground.spritePath);
   }
+  await renderLoadingPart(1);
   for (const underground of EMPTY_UNDERGROUND) {
     textures[underground.spritePath] = await Assets.load(underground.spritePath);
   }
+  await renderLoadingPart(2);
   textures[GREEN_FACTORY.spritePath] = await Assets.load(GREEN_FACTORY.spritePath);
+  await renderLoadingPart(3);
   textures[HOUSE_1.spritePath] = await Assets.load(HOUSE_1.spritePath);
+  await renderLoadingPart(4);
+  textures["assets/title-screen.png"] = await Assets.load("assets/title-screen.png");
+  await renderLoadingPart(5);
   textures[G_T_L_PIECE.spritePath] = await Assets.load(G_T_L_PIECE.spritePath);
+  await renderLoadingPart(6);
   textures[G_T_R_PIECE.spritePath] = await Assets.load(G_T_R_PIECE.spritePath);
+  await renderLoadingPart(7);
   textures[G_L_R_PIECE.spritePath] = await Assets.load(G_L_R_PIECE.spritePath);
+  await renderLoadingPart(8);
+}
+
+async function renderLoadingScreen() {
+  const imgWidth = 1600;
+  const imgHeight = 1090;
+  const scale = Math.min(app.renderer.width / imgWidth, app.renderer.height / imgHeight);
+  const margin = [
+    (app.renderer.width - 1600 * scale) / 2,
+    (app.renderer.height - 1090 * scale) / 2,
+  ]
+  const bg = await Assets.load(LOADING_BG);
+  const bgSprite = new PIXI.Sprite(bg);
+  bgSprite.x = margin[0];
+  bgSprite.y = margin[1];
+  bgSprite.scale.set(scale);
+  app.stage.addChild(bgSprite);
+}
+
+async function renderTitleScreen() {
+  const imgWidth = 1600;
+  const imgHeight = 1090;
+  const scale = Math.min(app.renderer.width / imgWidth, app.renderer.height / imgHeight);
+  const margin = [
+    (app.renderer.width - 1600 * scale) / 2,
+    (app.renderer.height - 1090 * scale) / 2,
+  ]
+  const bgTexture = textures["assets/title-screen.png"];
+  const bgSprite = new PIXI.Sprite(bgTexture);
+  bgSprite.hitArea = new PIXI.Rectangle(margin[0], margin[1], imgWidth * scale, imgHeight * scale);
+  bgSprite.interactive.true;
+  bgSprite.x = margin[0];
+  bgSprite.y = margin[1];
+  bgSprite.scale.set(scale);
+  app.stage.addChild(bgSprite);
+
+  bgSprite.on("globalpointerdown", async () => {
+    console.log("START")
+  });
+
+  const startText = new PIXI.Text("Click to Start!", { fontFamily: "Arial", fontSize: 64, fill: 0x000000, align: "left" });
+  startText.x = margin[0] + CELL_SIZE * 14.5 * scale;
+  startText.y = margin[1] + CELL_SIZE * 11 * scale;
+  app.stage.addChild(startText);
 }
 
 ;(async () => {
+  await renderLoadingScreen();
   await loadTextures();
-  await renderBackground();
-  await renderLevel(LEVEL_1);
-  await renderGridOverlay();
-  await renderQueue(LEVEL_1);
+  await renderTitleScreen();
+  // await renderBackground();
+  // await renderLevel(LEVEL_1);
+  // await renderGridOverlay();
+  // await renderQueue(LEVEL_1);
 })()

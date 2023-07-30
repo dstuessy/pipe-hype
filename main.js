@@ -317,6 +317,9 @@ async function renderLoadingScreen() {
 }
 
 async function renderTitleScreen() {
+  app.stage.removeChildren();
+  app.renderer.clear();
+
   const imgWidth = 1600;
   const imgHeight = 1090;
   const scale = Math.min(app.renderer.width / imgWidth, app.renderer.height / imgHeight);
@@ -324,31 +327,32 @@ async function renderTitleScreen() {
     (app.renderer.width - 1600 * scale) / 2,
     (app.renderer.height - 1090 * scale) / 2,
   ]
-  const bgTexture = textures["assets/title-screen.png"];
-  const bgSprite = new PIXI.Sprite(bgTexture);
-  bgSprite.hitArea = new PIXI.Rectangle(margin[0], margin[1], imgWidth * scale, imgHeight * scale);
-  bgSprite.interactive.true;
-  bgSprite.x = margin[0];
-  bgSprite.y = margin[1];
-  bgSprite.scale.set(scale);
-  app.stage.addChild(bgSprite);
-
-  bgSprite.on("globalpointerdown", async () => {
-    console.log("START")
-  });
+  const titleTexture = textures["assets/title-screen.png"];
+  const titleScreen = new PIXI.Sprite(titleTexture);
+  console.log("ttleScreen", titleScreen)
+  titleScreen.interactive = true;
+  titleScreen.x = margin[0];
+  titleScreen.y = margin[1];
+  titleScreen.scale.set(scale);
+  app.stage.addChild(titleScreen);
 
   const startText = new PIXI.Text("Click to Start!", { fontFamily: "Arial", fontSize: 64, fill: 0x000000, align: "left" });
   startText.x = margin[0] + CELL_SIZE * 14.5 * scale;
   startText.y = margin[1] + CELL_SIZE * 11 * scale;
   app.stage.addChild(startText);
+
+  titleScreen.on('pointerdown', async () => {
+    app.stage.removeChildren();
+    app.renderer.clear();
+    await renderBackground();
+    await renderLevel(LEVEL_1);
+    await renderGridOverlay();
+    await renderQueue(LEVEL_1);
+  });
 }
 
 ;(async () => {
   await renderLoadingScreen();
   await loadTextures();
   await renderTitleScreen();
-  // await renderBackground();
-  // await renderLevel(LEVEL_1);
-  // await renderGridOverlay();
-  // await renderQueue(LEVEL_1);
 })()

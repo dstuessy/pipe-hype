@@ -23,7 +23,7 @@ function findRefs(entities, entity) {
       return false;
     }
 
-    if (entity.connections.includes("up") && other.connections.includes("down")) {
+    if (entity.connections.includes("top") && other.connections.includes("bottom")) {
       return other.pos[0] === entity.pos[0] && other.pos[1] === entity.pos[1] - 1;
     }
 

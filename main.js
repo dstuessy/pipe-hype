@@ -43,7 +43,7 @@ async function renderBackground() {
   }
 }
 
-async function renderQueue() {
+async function renderQueue(level) {
   const scale = getScale();
   const margin = getGridMargins();
   const queueW = (QUEUE_WIDTH * CELL_SIZE);
@@ -52,6 +52,12 @@ async function renderQueue() {
 
   const container = new PIXI.Container();
   container.interactive = true;
+
+  for (const part of level.partsQueue) {
+    const partTexture = await Assets.load(part.spritePath);
+    part.sprite = Sprite.from(partTexture);
+    queue.push(part);
+  }
 
   const border = new PIXI.Graphics();
   border.hitArea = new PIXI.Rectangle(pos[0], pos[1], queueW * scale, queueH * scale);
@@ -103,11 +109,6 @@ async function renderQueue() {
 }
 
 async function renderLevel(level) {
-  for (const part of level.partsQueue) {
-    const partTexture = await Assets.load(part.spritePath);
-    part.sprite = Sprite.from(partTexture);
-    queue.push(part);
-  }
   for (const houseData of level.houses) {
     grid[houseData.pos[0]][houseData.pos[1]] = houseData;
     const houseTexture = await Assets.load(houseData.type.spritePath);
@@ -159,16 +160,6 @@ async function renderGridOverlay() {
       grid[pos[0]][pos[1]] = { ...selected };
       selected = null;
       app.stage.removeChild(hoverCell);
-
-      console.log(grid.flat())
-      const factory = grid.flat().find((v) => v && v.type && v.type.type === "factory");
-      factory.refs = getRefs(grid, factory.pos, factory.type.connections[0]);
-      console.log("factory", factory, factory.pos, factory.refs)
-      const c = isComplete(factory)
-      console.log("isCompleted", c)
-      if (c) {
-        completed.push(selected.color);
-      }
     }
   });
 }

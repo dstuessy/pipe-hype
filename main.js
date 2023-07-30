@@ -379,6 +379,7 @@ async function loadTextures() {
   await loadLoadingPartTexture(8);
   textures[G_L_R_PIECE.spritePath] = await Assets.load(G_L_R_PIECE.spritePath);
   await renderLoadingPart(8);
+  textures[BLUE_FACTORY.spritePath] = await Assets.load(BLUE_FACTORY.spritePath);
   await loadLoadingPartTexture(9);
   await loadLoadingPartTexture(10);
   await loadLoadingPartTexture(11);

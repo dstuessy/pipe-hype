@@ -55,6 +55,12 @@ const GREEN_FACTORY = {
   connections: ["bottom"],
 }
 
+const BLUE_FACTORY = {
+  spritePath: "assets/factory-blue.png",
+  color: ["blue"],
+  connections: ["bottom"],
+}
+
 const HOUSE_1 = {
   spritePath: "assets/house-1.png",
   color: ["green"],

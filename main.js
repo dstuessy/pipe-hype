@@ -223,14 +223,20 @@ async function renderGridOverlay() {
       if (completedFactories.length === factories.length) {
         setTimeout(async () => {
           await renderWinModal();
+          await reset();
         }, 200);
       } else if (queue.length === 0) {
         setTimeout(async () => {
           await renderLoseModal();
+          await reset();
         }, 200);
       }
     }
   });
+}
+
+async function reset() {
+  window.location.reload();
 }
 
 ;(async () => {

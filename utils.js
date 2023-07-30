@@ -13,6 +13,38 @@ function getGridMargins() {
   ]
 }
 
+function findRefs(entities, entity) {
+  const neighbours = entities.filter((other) => {
+    if (other === entity) {
+      return false;
+    }
+
+    if (entity.color.every((color) => color === other.color.includes(color))) {
+      return false;
+    }
+
+    if (entity.connections.includes("up") && other.connections.includes("down")) {
+      return other.pos[0] === entity.pos[0] && other.pos[1] === entity.pos[1] - 1;
+    }
+
+    if (entity.connections.includes("down") && other.connections.includes("up")) {
+      return other.pos[0] === entity.pos[0] && other.pos[1] === entity.pos[1] + 1;
+    }
+
+    if (entity.connections.includes("left") && other.connections.includes("right")) {
+      return other.pos[0] === entity.pos[0] - 1 && other.pos[1] === entity.pos[1];
+    }
+
+    if (entity.connections.includes("right") && other.connections.includes("left")) {
+      return other.pos[0] === entity.pos[0] + 1 && other.pos[1] === entity.pos[1];
+    }
+
+    return false;
+  });
+
+  return neighbours;
+}
+
 function renderToGrid(texture, pos) {
   const sprite = Sprite.from(texture);
   const scale = getScale();

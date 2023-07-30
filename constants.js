@@ -4,11 +4,6 @@ const GRID_SIZE_Y = 7;
 const QUEUE_WIDTH = 1;
 const QUEUE_MARGIN = 16;
 
-const GREEN_FACTORY = {
-  spritePath: "assets/factory-green.png",
-  color: ["green"],
-}
-
 const EMPTY_GROUND = [
   {
     spritePath: "assets/empty-ground-1.png",
@@ -51,9 +46,16 @@ const EMPTY_UNDERGROUND = [
   },
 ]
 
+const GREEN_FACTORY = {
+  spritePath: "assets/factory-green.png",
+  color: ["green"],
+  connections: ["bottom"],
+}
+
 const HOUSE_1 = {
   spritePath: "assets/house-1.png",
   color: ["green"],
+  connections: ["bottom"],
 }
 
 const G_T_L_PIECE = {

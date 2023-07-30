@@ -115,6 +115,7 @@ async function renderLevel(level) {
       type: "house",
       pos: houseData.pos,
       color: houseData.data.color,
+      connections: houseData.data.connections,
       sprite,
     });
   }
@@ -125,6 +126,7 @@ async function renderLevel(level) {
       type: "factory",
       pos: factoryData.pos,
       color: factoryData.data.color,
+      connections: factoryData.data.connections,
       refs: [],
       sprite,
     });
@@ -165,15 +167,19 @@ async function renderGridOverlay() {
     if (selected && pos[1] > 0) {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
       selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
-      entities.push({
+      const pipe = {
         type: "pipe",
         pos,
         refs: [],
+        connections: selected.connections,
         color: selected.color,
         sprite: selected.sprite,
-      });
+      }
+      pipe.refs = findRefs(entities, pipe);
+      entities.push(pipe);
       selected = null;
       app.stage.removeChild(hoverCell);
+      console.log(entities);
     }
   });
 }

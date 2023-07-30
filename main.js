@@ -129,7 +129,6 @@ async function renderLevel(level) {
       sprite,
     });
   }
-  console.log(entities)
 }
 
 async function renderGridOverlay() {
@@ -173,7 +172,6 @@ async function renderGridOverlay() {
         color: selected.color,
         sprite: selected.sprite,
       });
-      console.log(entities)
       selected = null;
       app.stage.removeChild(hoverCell);
     }

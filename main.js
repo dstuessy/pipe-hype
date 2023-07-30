@@ -83,6 +83,7 @@ async function renderQueue(level) {
         selected.oldPos = [selected.sprite.x, selected.sprite.y];
         selected.sprite.x = event.global.x;
         selected.sprite.y = event.global.y;
+        selected.sprite.anchor.set(0.5);
       }
     } else {
       selected.sprite.x = selected.oldPos[0];
@@ -171,6 +172,7 @@ async function renderGridOverlay() {
     if (selected && pos[1] > 0) {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
       selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
+      selected.sprite.anchor.set(0);
       const pipe = {
         type: "pipe",
         pos,

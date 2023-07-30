@@ -25,7 +25,6 @@ let selected = null;
 let hoverCell = null;
 const completed = [];
 const queue = [];
-// const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
 const entities = [];
 
 async function renderBackground() {

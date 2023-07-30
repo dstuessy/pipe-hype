@@ -433,8 +433,13 @@ async function renderTitleScreen() {
   });
 }
 
-;(async () => {
-  await renderLoadingScreen();
-  await loadTextures();
-  await renderTitleScreen();
-})()
+const overlayEl = document.querySelector('.overlay');
+overlayEl.addEventListener('click', () => {
+  const audio = new Audio("assets/soundtrack.mp3").play();
+  audio.then(async () => {
+    overlayEl.parentNode.removeChild(overlayEl);
+    await renderLoadingScreen();
+    await loadTextures();
+    await renderTitleScreen();
+  });
+});

@@ -2,7 +2,6 @@
 function getScale() {
   const gridPixelSizeX = OUTER_WIDTH_PIXELS;
   const gridPixelSizeY = GRID_SIZE_Y * CELL_SIZE;
-  console.log("h", app.renderer.height / gridPixelSizeY, "w", app.renderer.width / gridPixelSizeX);
   return Math.min(app.renderer.height / gridPixelSizeY, app.renderer.width / gridPixelSizeX);
 }
 

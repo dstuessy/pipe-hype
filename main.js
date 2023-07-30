@@ -23,6 +23,7 @@ document.getElementById('canvas-wrapper').appendChild(app.view);
 
 let selected = null;
 let hoverCell = null;
+const completed = [];
 const queue = [];
 const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
 const overlays = [];
@@ -121,9 +122,20 @@ function drawOverlay() {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
       selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
       selected.pos = pos;
-      grid[pos[0]][pos[1]] = selected;
+      selected.refs = getRefs(grid, pos, selected.type);
+      grid[pos[0]][pos[1]] = { ...selected };
       selected = null;
       app.stage.removeChild(hoverCell);
+
+      console.log(grid.flat())
+      const factory = grid.flat().find((v) => v && v.type && v.type.type === "factory");
+      factory.refs = getRefs(grid, factory.pos, factory.type.connections[0]);
+      console.log("factory", factory, factory.pos, factory.refs)
+      const c = isComplete(factory)
+      console.log("isCompleted", c)
+      if (c) {
+        completed.push(selected.color);
+      }
     }
   });
 }

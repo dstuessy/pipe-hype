@@ -26,17 +26,18 @@ let hoverCell = null;
 const completed = [];
 const queue = [];
 const entities = [];
+const textures = {};
 
 async function renderBackground() {
   for (let i = 0; i < GRID_SIZE_X; i++) {
     const randomGround = EMPTY_GROUND[Math.floor(Math.random() * EMPTY_GROUND.length)]
-    const groundTexture = await Assets.load(randomGround.spritePath);
+    const groundTexture = textures[randomGround.spritePath];
     renderToGrid(groundTexture, [i, 0])
   }
   for (let i = 0; i < GRID_SIZE_X; i++) {
     for (let ii = 1; ii < GRID_SIZE_Y; ii++) {
       const randomUnderground = EMPTY_UNDERGROUND[Math.floor(Math.random() * EMPTY_UNDERGROUND.length)]
-      const undergroundTexture = await Assets.load(randomUnderground.spritePath);
+      const undergroundTexture = textures[randomUnderground.spritePath];
       renderToGrid(undergroundTexture, [i, ii])
     }
   }
@@ -53,7 +54,7 @@ async function renderQueue(level) {
   container.interactive = true;
 
   for (const part of level.partsQueue) {
-    const partTexture = await Assets.load(part.spritePath);
+    const partTexture = textures[part.spritePath];
     part.sprite = Sprite.from(partTexture);
     queue.push(part);
   }
@@ -131,7 +132,7 @@ async function renderQueue(level) {
 
 async function renderLevel(level) {
   for (const houseData of level.houses) {
-    const houseTexture = await Assets.load(houseData.data.spritePath);
+    const houseTexture = textures[houseData.data.spritePath];
     const sprite = renderToGrid(houseTexture, houseData.pos)
     entities.push({
       type: "house",
@@ -142,7 +143,7 @@ async function renderLevel(level) {
     });
   }
   for (const factoryData of level.factories) {
-    const factoryTexture = await Assets.load(factoryData.data.spritePath);
+    const factoryTexture = textures[factoryData.data.spritePath];
     const sprite = renderToGrid(factoryTexture, factoryData.pos)
     entities.push({
       type: "factory",
@@ -239,7 +240,22 @@ async function reset() {
   window.location.reload();
 }
 
+async function loadTextures() {
+  for (const ground of EMPTY_GROUND) {
+    textures[ground.spritePath] = await Assets.load(ground.spritePath);
+  }
+  for (const underground of EMPTY_UNDERGROUND) {
+    textures[underground.spritePath] = await Assets.load(underground.spritePath);
+  }
+  textures[GREEN_FACTORY.spritePath] = await Assets.load(GREEN_FACTORY.spritePath);
+  textures[HOUSE_1.spritePath] = await Assets.load(HOUSE_1.spritePath);
+  textures[G_T_L_PIECE.spritePath] = await Assets.load(G_T_L_PIECE.spritePath);
+  textures[G_T_R_PIECE.spritePath] = await Assets.load(G_T_R_PIECE.spritePath);
+  textures[G_L_R_PIECE.spritePath] = await Assets.load(G_L_R_PIECE.spritePath);
+}
+
 ;(async () => {
+  await loadTextures();
   await renderBackground();
   await renderLevel(LEVEL_1);
   await renderGridOverlay();

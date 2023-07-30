@@ -179,7 +179,14 @@ async function renderGridOverlay() {
       entities.push(pipe);
       selected = null;
       app.stage.removeChild(hoverCell);
-      console.log(entities);
+      const factories = entities.filter(e => e.type === "factory");
+      for (const f of factories) {
+        f.refs = findRefs(entities, f);
+      }
+      const completedFactories = factories.filter(f => isComplete(f));
+      if (completedFactories.length === factories.length) {
+        alert("You win!");
+      }
     }
   });
 }
@@ -189,5 +196,4 @@ async function renderGridOverlay() {
   await renderLevel(LEVEL_1);
   await renderGridOverlay();
   await renderQueue(LEVEL_1);
-  console.log("entities", entities);
 })()

@@ -23,11 +23,15 @@ function findRefs(entities, entity) {
       return false;
     }
 
+    if (other.type === "factory") {
+      return false;
+    }
+
     if (entity.connections.includes("top") && other.connections.includes("bottom")) {
       return other.pos[0] === entity.pos[0] && other.pos[1] === entity.pos[1] - 1;
     }
 
-    if (entity.connections.includes("down") && other.connections.includes("up")) {
+    if (entity.connections.includes("bottom") && other.connections.includes("top")) {
       return other.pos[0] === entity.pos[0] && other.pos[1] === entity.pos[1] + 1;
     }
 
@@ -65,11 +69,15 @@ function getGridPos(x, y) {
   ]
 }
 
-function isComplete(piece) {
-  if (piece && !piece.refs.length) {
+function isComplete(entity) {
+  if (entity.type === "house") {
+    return true;
+  }
+
+  if (entity && (!entity.refs || entity.refs.length === 0)) {
     return false;
   }
 
-  // piece.refs.forEach((ref) => {
-  // });
+  const areCompleted = entity.refs.every((ref) => isComplete(ref));
+  return areCompleted.length !== 0;
 }

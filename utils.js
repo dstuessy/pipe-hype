@@ -5,7 +5,7 @@ function getScale() {
   return Math.min(app.renderer.height / gridPixelSizeY, app.renderer.width / gridPixelSizeX);
 }
 
-function getGridMargins(){
+function getGridMargins() {
   const scale = getScale();
   return [
     (app.renderer.width - (GRID_SIZE_X * CELL_SIZE * scale)) / 2,

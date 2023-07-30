@@ -133,6 +133,10 @@ async function renderLevel(level) {
   }
 }
 
+async function renderWinModal() {
+  alert("Congratulations, everything is connected!");
+}
+
 async function renderGridOverlay() {
   const scale = getScale();
   const margin = getGridMargins();
@@ -185,8 +189,8 @@ async function renderGridOverlay() {
       }
       const completedFactories = factories.filter(f => isComplete(f));
       if (completedFactories.length === factories.length) {
-        setTimeout(() => {
-          alert("You win!");
+        setTimeout(async () => {
+          await renderWinModal();
         }, 500);
       }
     }

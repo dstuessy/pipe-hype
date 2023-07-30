@@ -159,6 +159,10 @@ async function renderWinModal() {
   alert("Congratulations, everything is connected!");
 }
 
+async function renderLoseModal() {
+  alert("Oh nooooo, you lost!");
+}
+
 async function renderGridOverlay() {
   const scale = getScale();
   const margin = getGridMargins();
@@ -219,6 +223,10 @@ async function renderGridOverlay() {
       if (completedFactories.length === factories.length) {
         setTimeout(async () => {
           await renderWinModal();
+        }, 500);
+      } else if (queue.length === 0) {
+        setTimeout(async () => {
+          await renderLoseModal();
         }, 500);
       }
     }

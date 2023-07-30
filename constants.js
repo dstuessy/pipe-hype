@@ -4,8 +4,8 @@ const GRID_SIZE_Y = 7;
 const QUEUE_WIDTH = 1;
 const QUEUE_MARGIN = 16;
 const OUTER_WIDTH_PIXELS = (GRID_SIZE_X * CELL_SIZE) + (QUEUE_WIDTH * CELL_SIZE) + QUEUE_MARGIN;
-const MODAL_WIDTH = 5;
-const MODAL_HEIGHT = 3;
+const MODAL_WIDTH = 8;
+const MODAL_HEIGHT = 4;
 
 const EMPTY_GROUND = [
   {

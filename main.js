@@ -197,38 +197,40 @@ async function renderModal(renderCb) {
 
 async function renderWinModal() {
   return await renderModal((modal, width) => {
-    const titleText = new PIXI.Text("Congratulations!", {fontFamily : 'Arial', fontSize: 42, fill : 0x222034, align : 'center'});
+    const scale = getScale();
+    const titleText = new PIXI.Text("Congratulations!", {fontFamily : 'Arial', fontSize: 42 * scale, fill : 0x222034, align : 'center'});
     titleText.x = (width / 2) - (titleText.width / 2);
-    titleText.y = CELL_SIZE * 1.5;
+    titleText.y = CELL_SIZE * 0.8 * scale;
     modal.addChild(titleText);
     
-    const subtitleText = new PIXI.Text("Everything is connected!", {fontFamily : 'Arial', fontSize: 28, fill : 0x222034, align : 'center'});
+    const subtitleText = new PIXI.Text("Everything is connected!", {fontFamily : 'Arial', fontSize: 28 * scale, fill : 0x222034, align : 'center'});
     subtitleText.x = (width / 2) - (subtitleText.width / 2);
-    subtitleText.y = titleText.y + CELL_SIZE;
+    subtitleText.y = titleText.y + CELL_SIZE * scale;
     modal.addChild(subtitleText);
 
-    const instructionsText = new PIXI.Text("Click here to continue", {fontFamily : 'Arial', fontSize: 18, fill : 0x222034, align : 'center'});
+    const instructionsText = new PIXI.Text("Click here to continue", {fontFamily : 'Arial', fontSize: 22 * scale, fill : 0x222034, align : 'center'});
     instructionsText.x = (width / 2) - (instructionsText.width / 2);
-    instructionsText.y = subtitleText.y + CELL_SIZE;
+    instructionsText.y = subtitleText.y + CELL_SIZE * scale;
     modal.addChild(instructionsText);
   });
 }
 
 async function renderLoseModal() {
   return await renderModal((modal, width) => {
-    const titleText = new PIXI.Text("Oh no!", {fontFamily : 'Arial', fontSize: 42, fill : 0x222034, align : 'center'});
+    const scale = getScale();
+    const titleText = new PIXI.Text("Oh no!", {fontFamily : 'Arial', fontSize: 42 * scale, fill : 0x222034, align : 'center'});
     titleText.x = (width / 2) - (titleText.width / 2);
-    titleText.y = CELL_SIZE * 1.5;
+    titleText.y = CELL_SIZE * scale;
     modal.addChild(titleText);
     
-    const subtitleText = new PIXI.Text("You didn't connect everything!", {fontFamily : 'Arial', fontSize: 28, fill : 0x222034, align : 'center'});
+    const subtitleText = new PIXI.Text("You didn't connect everything!", {fontFamily : 'Arial', fontSize: 28 * scale, fill : 0x222034, align : 'center'});
     subtitleText.x = (width / 2) - (subtitleText.width / 2);
-    subtitleText.y = titleText.y + CELL_SIZE;
+    subtitleText.y = titleText.y + CELL_SIZE * scale;
     modal.addChild(subtitleText);
 
-    const instructionsText = new PIXI.Text("Click here to try again", {fontFamily : 'Arial', fontSize: 18, fill : 0x222034, align : 'center'});
+    const instructionsText = new PIXI.Text("Click here to try again", {fontFamily : 'Arial', fontSize: 22 * scale, fill : 0x222034, align : 'center'});
     instructionsText.x = (width / 2) - (instructionsText.width / 2);
-    instructionsText.y = subtitleText.y + CELL_SIZE;
+    instructionsText.y = subtitleText.y + CELL_SIZE * scale;
     modal.addChild(instructionsText);
   });
 }
@@ -418,7 +420,7 @@ async function renderTitleScreen() {
   titleScreen.scale.set(scale);
   app.stage.addChild(titleScreen);
 
-  const startText = new PIXI.Text("Click to Start!", { fontFamily: "Arial", fontSize: 64, fill: 0x000000, align: "left" });
+  const startText = new PIXI.Text("Click to Start!", { fontFamily: "Arial", fontSize: 64 * scale, fill: 0x000000, align: "left" });
   startText.x = margin[0] + CELL_SIZE * 14.5 * scale;
   startText.y = margin[1] + CELL_SIZE * 11 * scale;
   app.stage.addChild(startText);

@@ -185,7 +185,9 @@ async function renderGridOverlay() {
       }
       const completedFactories = factories.filter(f => isComplete(f));
       if (completedFactories.length === factories.length) {
-        alert("You win!");
+        setTimeout(() => {
+          alert("You win!");
+        }, 500);
       }
     }
   });

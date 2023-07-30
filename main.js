@@ -47,7 +47,7 @@ async function renderQueue(level) {
   const margin = getGridMargins();
   const queueW = (QUEUE_WIDTH * CELL_SIZE);
   const queueH = (GRID_SIZE_Y * CELL_SIZE);
-  const pos = [margin[0]-queueW-QUEUE_MARGIN * scale, margin[1]];
+  const pos = [margin[0]-(queueW * scale)-QUEUE_MARGIN, margin[1]];
 
   const container = new PIXI.Container();
   container.interactive = true;

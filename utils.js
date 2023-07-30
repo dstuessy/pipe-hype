@@ -33,36 +33,6 @@ function getGridPos(x, y) {
   ]
 }
 
-function getRefs(grid, pos, color) {
-  const refs = [];
-  const left = grid[pos[0] - 1] && grid[pos[0] - 1][pos[1]];
-  const right = grid[pos[0] + 1] && grid[pos[0] + 1][pos[1]];
-  const top = grid[pos[0]] && grid[pos[0]][pos[1] - 1];
-  const bottom = grid[pos[0]] && grid[pos[0]][pos[1] + 1];
-
-  if (pos[1] === 0) {
-    console.log("factory", bottom)
-  }
-
-  if (left && left.color === color) {
-    refs.push(left);
-  }
-
-  if (right && right.color === color) {
-    refs.push(right);
-  }
-
-  if (top && top.color === color) {
-    refs.push(top);
-  }
-
-  if (bottom && bottom.color === color) {
-    refs.push(bottom);
-  }
-
-  return refs;
-}
-
 function isComplete(piece) {
   if (piece && !piece.refs.length) {
     return false;

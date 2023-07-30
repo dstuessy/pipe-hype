@@ -25,11 +25,11 @@ let selected = null;
 let hoverCell = null;
 const completed = [];
 const queue = [];
-const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
-const overlays = [];
+// const grid = new Array(GRID_SIZE_Y).fill(null).map(() => new Array(GRID_SIZE_X).fill(null)); 
+const entities = [];
 
 async function renderBackground() {
-  for (const [i, _] of Object.entries(grid[0])) {
+  for (let i = 0; i < GRID_SIZE_X; i++) {
     const randomGround = EMPTY_GROUND[Math.floor(Math.random() * EMPTY_GROUND.length)]
     const groundTexture = await Assets.load(randomGround.spritePath);
     renderToGrid(groundTexture, [i, 0])
@@ -110,15 +110,27 @@ async function renderQueue(level) {
 
 async function renderLevel(level) {
   for (const houseData of level.houses) {
-    grid[houseData.pos[0]][houseData.pos[1]] = houseData;
-    const houseTexture = await Assets.load(houseData.type.spritePath);
-    renderToGrid(houseTexture, houseData.pos)
+    const houseTexture = await Assets.load(houseData.data.spritePath);
+    const sprite = renderToGrid(houseTexture, houseData.pos)
+    entities.push({
+      type: "house",
+      pos: houseData.pos,
+      color: houseData.data.color,
+      sprite,
+    });
   }
   for (const factoryData of level.factories) {
-    grid[factoryData.pos[0]][factoryData.pos[1]] = factoryData;
-    const factoryTexture = await Assets.load(factoryData.type.spritePath);
-    renderToGrid(factoryTexture, factoryData.pos)
+    const factoryTexture = await Assets.load(factoryData.data.spritePath);
+    const sprite = renderToGrid(factoryTexture, factoryData.pos)
+    entities.push({
+      type: "factory",
+      pos: factoryData.pos,
+      color: factoryData.data.color,
+      refs: [],
+      sprite,
+    });
   }
+  console.log(entities)
 }
 
 async function renderGridOverlay() {
@@ -155,9 +167,14 @@ async function renderGridOverlay() {
     if (selected && pos[1] > 0) {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
       selected.sprite.y = pos[1] * CELL_SIZE * scale + margin[1];
-      selected.pos = pos;
-      selected.refs = getRefs(grid, pos, selected.type);
-      grid[pos[0]][pos[1]] = { ...selected };
+      entities.push({
+        type: "pipe",
+        pos,
+        refs: [],
+        color: selected.color,
+        sprite: selected.sprite,
+      });
+      console.log(entities)
       selected = null;
       app.stage.removeChild(hoverCell);
     }
@@ -169,4 +186,5 @@ async function renderGridOverlay() {
   await renderLevel(LEVEL_1);
   await renderGridOverlay();
   await renderQueue(LEVEL_1);
+  console.log("entities", entities);
 })()

@@ -5,9 +5,8 @@ const QUEUE_WIDTH = 1;
 const QUEUE_MARGIN = 16;
 
 const GREEN_FACTORY = {
-  type: "factory",
   spritePath: "assets/factory-green.png",
-  connections: ["green"],
+  color: ["green"],
 }
 
 const EMPTY_GROUND = [
@@ -53,31 +52,29 @@ const EMPTY_UNDERGROUND = [
 ]
 
 const HOUSE_1 = {
-  type: "house",
   spritePath: "assets/house-1.png",
-  connections: ["green"],
+  color: ["green"],
 }
 
 const G_T_L_PIECE = {
-  color: "green",
+  color: ["green"],
   spritePath: "assets/g-t-l.png",
-  connections: ["t", "l"],
+  connections: ["top", "left"],
 }
 
 const G_T_R_PIECE = {
-  color: "green",
+  color: ["green"],
   spritePath: "assets/g-t-r.png",
-  connections: ["t", "r"],
+  connections: ["top", "right"],
 }
 
 const G_L_R_PIECE = {
-  color: "green",
+  color: ["green"],
   spritePath: "assets/g-l-r.png",
-  connections: ["l", "r"],
+  connections: ["left", "right"],
 }
 
 const LEVEL_1 = {
-  types: ["types"],
   partsQueue: [
     G_T_L_PIECE,
     G_L_R_PIECE,
@@ -86,13 +83,13 @@ const LEVEL_1 = {
   houses: [
     {
       pos: [4, 0],
-      type: HOUSE_1,
+      data: HOUSE_1,
     },
   ],
   factories: [
     {
       pos: [6, 0],
-      type: GREEN_FACTORY,
+      data: GREEN_FACTORY,
     }
   ],
 }

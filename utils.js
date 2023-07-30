@@ -74,10 +74,10 @@ function isComplete(entity) {
     return true;
   }
 
-  if (entity && (!entity.refs || entity.refs.length === 0)) {
+  if (entity && !entity.refs) {
     return false;
   }
 
   const areCompleted = entity.refs.every((ref) => isComplete(ref));
-  return areCompleted.length !== 0;
+  return entity.refs.length > 0 && areCompleted;
 }

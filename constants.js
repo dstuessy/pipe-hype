@@ -90,6 +90,10 @@ const LEVEL_1 = {
       pos: [4, 0],
       data: HOUSE_1,
     },
+    {
+      pos: [3, 0],
+      data: HOUSE_1,
+    },
   ],
   factories: [
     {

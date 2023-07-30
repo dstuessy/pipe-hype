@@ -72,7 +72,34 @@ async function renderQueue(level) {
     app.stage.addChild(part.sprite);
   });
 
-  border.on("pointerdown", (event) => {
+  const returnSelected = () => {
+    if (selected) {
+      selected.sprite.x = selected.oldPos[0];
+      selected.sprite.y = selected.oldPos[1];
+      selected.sprite.anchor.set(0);
+      queue.push(selected);
+      selected = null;
+    }
+  }
+
+  border.on("pointerup", returnSelected)
+
+  container.on("globalpointermove", (event) => {
+    if (selected) {
+      selected.sprite.x = event.global.x;
+      selected.sprite.y = event.global.y;
+    }
+  });
+
+  const selectableBorder = new PIXI.Graphics();
+  selectableBorder.hitArea = new PIXI.Rectangle(pos[0], pos[1] + (queueH - CELL_SIZE) * scale, queueW * scale, CELL_SIZE * scale);
+  selectableBorder.interactive = true;
+  selectableBorder.lineStyle(4, 0x222034);
+  selectableBorder.drawRect(pos[0], pos[1] + (queueH - CELL_SIZE) * scale, queueW * scale, CELL_SIZE * scale);
+  container.addChild(selectableBorder);
+
+  selectableBorder.on("pointerup", returnSelected);
+  selectableBorder.on("pointerdown", (event) => {
     if (hoverCell) {
       app.stage.removeChild(hoverCell);
     }
@@ -88,22 +115,11 @@ async function renderQueue(level) {
     } else {
       selected.sprite.x = selected.oldPos[0];
       selected.sprite.y = selected.oldPos[1];
+      selected.sprite.anchor.set(0);
       queue.push(selected);
       selected = null;
     }
   });
-
-  container.on("globalpointermove", (event) => {
-    if (selected) {
-      selected.sprite.x = event.global.x;
-      selected.sprite.y = event.global.y;
-    }
-  });
-
-  const selectableBorder = new PIXI.Graphics();
-  selectableBorder.lineStyle(4, 0x222034);
-  selectableBorder.drawRect(pos[0], pos[1] + (queueH - CELL_SIZE) * scale, queueW * scale, CELL_SIZE * scale);
-  container.addChild(selectableBorder);
 
   app.stage.addChild(container);
 }
@@ -185,6 +201,11 @@ async function renderGridOverlay() {
       entities.push(pipe);
       selected = null;
       app.stage.removeChild(hoverCell);
+
+      for (const part of queue) {
+        part.sprite.y = part.sprite.y + CELL_SIZE * scale;
+      }
+
       const factories = entities.filter(e => e.type === "factory");
       for (const f of factories) {
         f.refs = findRefs(entities, f);

@@ -156,7 +156,7 @@ async function renderLevel(level) {
   }
 }
 
-async function renderWinModal() {
+async function renderModal(renderCb) {
   const scale = getScale();
   const width = MODAL_WIDTH * CELL_SIZE * scale;
   const height = MODAL_HEIGHT * CELL_SIZE * scale;
@@ -165,6 +165,7 @@ async function renderWinModal() {
   const modal = new PIXI.Container();
   modal.x = pos[0];
   modal.y = pos[1];
+  app.stage.addChild(modal);
 
   for (let i = 0; i < MODAL_WIDTH; i++) {
     for (let ii = 0; ii < MODAL_HEIGHT; ii++) {
@@ -184,31 +185,52 @@ async function renderWinModal() {
   border.lineStyle(4, 0x222034);
   border.drawRect(0, 0, width, height);
   modal.addChild(border);
-  
-  const titleText = new PIXI.Text("Congratulations!", {fontFamily : 'Arial', fontSize: 42, fill : 0x222034, align : 'center'});
-  titleText.x = (width / 2) - (titleText.width / 2);
-  titleText.y = CELL_SIZE * 1.5;
-  modal.addChild(titleText);
-  
-  const subtitleText = new PIXI.Text("Everything is connected!", {fontFamily : 'Arial', fontSize: 28, fill : 0x222034, align : 'center'});
-  subtitleText.x = (width / 2) - (subtitleText.width / 2);
-  subtitleText.y = titleText.y + CELL_SIZE;
-  modal.addChild(subtitleText);
 
-  const instructionsText = new PIXI.Text("Click here to continue", {fontFamily : 'Arial', fontSize: 18, fill : 0x222034, align : 'center'});
-  instructionsText.x = (width / 2) - (instructionsText.width / 2);
-  instructionsText.y = subtitleText.y + CELL_SIZE;
-  modal.addChild(instructionsText);
+  renderCb(modal, width, height);
 
-  border.on("pointerdown", () => {
-    reset();
+  return new Promise((resolve) => {
+    border.on("pointerdown", () => {
+      resolve();
+    });
   });
+}
 
-  app.stage.addChild(modal);
+async function renderWinModal() {
+  return await renderModal((modal, width) => {
+    const titleText = new PIXI.Text("Congratulations!", {fontFamily : 'Arial', fontSize: 42, fill : 0x222034, align : 'center'});
+    titleText.x = (width / 2) - (titleText.width / 2);
+    titleText.y = CELL_SIZE * 1.5;
+    modal.addChild(titleText);
+    
+    const subtitleText = new PIXI.Text("Everything is connected!", {fontFamily : 'Arial', fontSize: 28, fill : 0x222034, align : 'center'});
+    subtitleText.x = (width / 2) - (subtitleText.width / 2);
+    subtitleText.y = titleText.y + CELL_SIZE;
+    modal.addChild(subtitleText);
+
+    const instructionsText = new PIXI.Text("Click here to continue", {fontFamily : 'Arial', fontSize: 18, fill : 0x222034, align : 'center'});
+    instructionsText.x = (width / 2) - (instructionsText.width / 2);
+    instructionsText.y = subtitleText.y + CELL_SIZE;
+    modal.addChild(instructionsText);
+  });
 }
 
 async function renderLoseModal() {
-  alert("Oh nooooo, you lost!");
+  return await renderModal((modal, width) => {
+    const titleText = new PIXI.Text("Oh no!", {fontFamily : 'Arial', fontSize: 42, fill : 0x222034, align : 'center'});
+    titleText.x = (width / 2) - (titleText.width / 2);
+    titleText.y = CELL_SIZE * 1.5;
+    modal.addChild(titleText);
+    
+    const subtitleText = new PIXI.Text("You didn't connect everything!", {fontFamily : 'Arial', fontSize: 28, fill : 0x222034, align : 'center'});
+    subtitleText.x = (width / 2) - (subtitleText.width / 2);
+    subtitleText.y = titleText.y + CELL_SIZE;
+    modal.addChild(subtitleText);
+
+    const instructionsText = new PIXI.Text("Click here to try again", {fontFamily : 'Arial', fontSize: 18, fill : 0x222034, align : 'center'});
+    instructionsText.x = (width / 2) - (instructionsText.width / 2);
+    instructionsText.y = subtitleText.y + CELL_SIZE;
+    modal.addChild(instructionsText);
+  });
 }
 
 async function renderGridOverlay() {
@@ -240,7 +262,7 @@ async function renderGridOverlay() {
     }
   });
 
-  border.on("pointerup", (event) => {
+  border.on("pointerup", async (event) => {
     const pos = getGridPos(event.global.x - margin[0], event.global.y - margin[1]);
     if (selected && pos[1] > 0) {
       selected.sprite.x = pos[0] * CELL_SIZE * scale + margin[0];
@@ -269,14 +291,11 @@ async function renderGridOverlay() {
       }
       const completedFactories = factories.filter(f => isComplete(f));
       if (completedFactories.length === factories.length) {
-        setTimeout(async () => {
-          await renderWinModal();
-        }, 200);
+        await renderWinModal();
+        reset();
       } else if (queue.length === 0) {
-        setTimeout(async () => {
-          await renderLoseModal();
-          await reset();
-        }, 200);
+        await renderLoseModal();
+        reset();
       }
     }
   });

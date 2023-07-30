@@ -58,6 +58,11 @@ async function renderQueue(level) {
     queue.push(part);
   }
 
+  const queueCover = new PIXI.Graphics();
+  queueCover.beginFill(0x000000, 0.5)
+  queueCover.drawRect(pos[0], pos[1], queueW * scale, (queueH - CELL_SIZE) * scale);
+  container.addChild(queueCover);
+
   const border = new PIXI.Graphics();
   border.hitArea = new PIXI.Rectangle(pos[0], pos[1], queueW * scale, queueH * scale);
   border.interactive = true;

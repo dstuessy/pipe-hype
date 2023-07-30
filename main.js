@@ -157,7 +157,54 @@ async function renderLevel(level) {
 }
 
 async function renderWinModal() {
-  alert("Congratulations, everything is connected!");
+  const scale = getScale();
+  const width = MODAL_WIDTH * CELL_SIZE * scale;
+  const height = MODAL_HEIGHT * CELL_SIZE * scale;
+  const pos = [(app.screen.width / 2 - width / 2), app.screen.height / 2 - height / 2];
+
+  const modal = new PIXI.Container();
+  modal.x = pos[0];
+  modal.y = pos[1];
+
+  for (let i = 0; i < MODAL_WIDTH; i++) {
+    for (let ii = 0; ii < MODAL_HEIGHT; ii++) {
+      const randomUnderground = EMPTY_UNDERGROUND[Math.floor(Math.random() * EMPTY_UNDERGROUND.length)]
+      const undergroundTexture = textures[randomUnderground.spritePath];
+      const undergroundSprite = Sprite.from(undergroundTexture);
+      undergroundSprite.x = i * CELL_SIZE * scale;
+      undergroundSprite.y = ii * CELL_SIZE * scale;
+      undergroundSprite.scale.set(scale);
+      modal.addChild(undergroundSprite);
+    }
+  }
+
+  const border = new PIXI.Graphics();
+  border.interactive = true;
+  border.hitArea = new PIXI.Rectangle(0, 0, width, height);
+  border.lineStyle(4, 0x222034);
+  border.drawRect(0, 0, width, height);
+  modal.addChild(border);
+  
+  const titleText = new PIXI.Text("Congratulations!", {fontFamily : 'Arial', fontSize: 42, fill : 0x222034, align : 'center'});
+  titleText.x = (width / 2) - (titleText.width / 2);
+  titleText.y = CELL_SIZE * 1.5;
+  modal.addChild(titleText);
+  
+  const subtitleText = new PIXI.Text("Everything is connected!", {fontFamily : 'Arial', fontSize: 28, fill : 0x222034, align : 'center'});
+  subtitleText.x = (width / 2) - (subtitleText.width / 2);
+  subtitleText.y = titleText.y + CELL_SIZE;
+  modal.addChild(subtitleText);
+
+  const instructionsText = new PIXI.Text("Click here to continue", {fontFamily : 'Arial', fontSize: 18, fill : 0x222034, align : 'center'});
+  instructionsText.x = (width / 2) - (instructionsText.width / 2);
+  instructionsText.y = subtitleText.y + CELL_SIZE;
+  modal.addChild(instructionsText);
+
+  border.on("pointerdown", () => {
+    reset();
+  });
+
+  app.stage.addChild(modal);
 }
 
 async function renderLoseModal() {
@@ -224,7 +271,6 @@ async function renderGridOverlay() {
       if (completedFactories.length === factories.length) {
         setTimeout(async () => {
           await renderWinModal();
-          await reset();
         }, 200);
       } else if (queue.length === 0) {
         setTimeout(async () => {
@@ -248,8 +294,8 @@ async function renderLoadingPart(n) {
     (app.renderer.width - 1600 * scale) / 2,
     (app.renderer.height - 1090 * scale) / 2,
   ]
-  const texture = await Assets.load(`assets/loading-${n}.png`);
-  const sprite = new PIXI.Sprite(texture);
+  const spritePath = `assets/loading-${n}.png`
+  const sprite = new PIXI.Sprite(textures[spritePath]);
   const minX = margin[0];
   const minY = margin[1] + 241 * scale;
   switch(n) {
@@ -277,27 +323,44 @@ async function renderLoadingPart(n) {
   app.stage.addChild(sprite);
 }
 
+async function loadLoadingPartTexture(n) {
+  const spritePath = `assets/loading-${n}.png`;
+  textures[spritePath] = await Assets.load(spritePath);
+  return spritePath;
+}
+
 async function loadTextures() {
+  await loadLoadingPartTexture(1);
   for (const ground of EMPTY_GROUND) {
     textures[ground.spritePath] = await Assets.load(ground.spritePath);
   }
   await renderLoadingPart(1);
+  await loadLoadingPartTexture(2);
   for (const underground of EMPTY_UNDERGROUND) {
     textures[underground.spritePath] = await Assets.load(underground.spritePath);
   }
   await renderLoadingPart(2);
+  await loadLoadingPartTexture(3);
   textures[GREEN_FACTORY.spritePath] = await Assets.load(GREEN_FACTORY.spritePath);
   await renderLoadingPart(3);
+  await loadLoadingPartTexture(4);
   textures[HOUSE_1.spritePath] = await Assets.load(HOUSE_1.spritePath);
   await renderLoadingPart(4);
+  await loadLoadingPartTexture(5);
   textures["assets/title-screen.png"] = await Assets.load("assets/title-screen.png");
   await renderLoadingPart(5);
+  await loadLoadingPartTexture(6);
   textures[G_T_L_PIECE.spritePath] = await Assets.load(G_T_L_PIECE.spritePath);
   await renderLoadingPart(6);
+  await loadLoadingPartTexture(7);
   textures[G_T_R_PIECE.spritePath] = await Assets.load(G_T_R_PIECE.spritePath);
   await renderLoadingPart(7);
+  await loadLoadingPartTexture(8);
   textures[G_L_R_PIECE.spritePath] = await Assets.load(G_L_R_PIECE.spritePath);
   await renderLoadingPart(8);
+  await loadLoadingPartTexture(9);
+  await loadLoadingPartTexture(10);
+  await loadLoadingPartTexture(11);
 }
 
 async function renderLoadingScreen() {
